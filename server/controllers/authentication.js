@@ -8,8 +8,16 @@ function tokenForUser(user) {
 }
 exports.login = function (req, res) {
   const email = req.body.email;
-  res.send({ token: tokenForUser(req.user),
-    user: { name: req.user.name, email: email, admin: (req.user.name === 'admin' && email === 'admin@gmail.com') } });
+  res.send({
+    token: tokenForUser(req.user),
+    user: {
+      name: req.user.name,
+      email: email,
+      admin: (req.user.name === 'admin' && email === 'admin@gmail.com'),
+      likes: req.user.likes,
+    },
+    likes: req.user.likes,
+  });
 };
 exports.register = function (req, res, next) {
   const { email, password, name } = req.body;

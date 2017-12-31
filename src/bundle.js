@@ -1034,6 +1034,7 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 
 var URL = 'http://localhost:8080';
 var setToken = function setToken(response) {
+  console.log(response);
   localStorage.setItem('token', response.data.token);
   localStorage.setItem('tokenUser', JSON.stringify(response.data.user));
   localStorage.setItem('likedBooks', JSON.stringify(response.data.likes));

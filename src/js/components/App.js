@@ -14,13 +14,13 @@ import Welcome from '../containers/Wecome';
 import Header from '../containers/Header';
 import BestBooks from './UserBooks';
 
+import { getUser } from '../actions/actions'
+
 class App extends Component {
   componentDidMount() {
     const token = localStorage.getItem('token');
-    const tokenUser = localStorage.getItem('tokenUser');
-    const user = JSON.parse(tokenUser);
     if (token) {
-      store.dispatch({ type: AUTH_USER, payload: user });
+      this.props.getUser(token);
     }
   }
   render() {
@@ -54,4 +54,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, null)(App);
+export default connect(mapStateToProps, { getUser })(App);

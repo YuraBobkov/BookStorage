@@ -7,7 +7,7 @@ import Item from './Item';
 
 class BestBooks extends Component {
   componentDidMount() {
-    this.props.getMyBooks(localStorage.getItem('likedBooks'));
+    this.props.getMyBooks(this.props.user.email);
   }
   render() {
     return (
@@ -20,6 +20,7 @@ class BestBooks extends Component {
 
 function mapStateToProps(state) {
   return {
+    user: state.auth.user,
     books: state.userBooks,
   };
 }

@@ -26,7 +26,18 @@ app.post('/books', (req, res) => {
   db.updateBook(req.body).then(e=> res.send(e));
 });
 
-app.post('/likedbooks', (req, res) => {
+app.post('/get-user', (req, res) => {
+  db.encode(req.body).then(user => {
+    res.send({
+      email: user.email,
+      likes: user.likes,
+      name: user.name,
+      admin: user.email === 'admin@gmail.com',
+    });
+  });
+});
+
+app.post('/users-books', (req, res) => {
   db.setGoodBook(req.body).then(data => res.send([...data, req.body.number]));
 });
 

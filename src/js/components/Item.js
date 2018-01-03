@@ -24,10 +24,9 @@ class Item extends Component {
     e.stopPropagation();
     const elem = e.currentTarget;
     const bookId = elem.getAttribute('data-id');
-    const user = JSON.parse(localStorage.getItem('tokenUser')).email
     elem.classList.toggle('fa-heart');
     elem.classList.toggle('fa-heart-o');
-    this.props.likeBook(bookId, user);
+    this.props.likeBook(bookId, this.props.user.email);
   };
   pickItem = (e) => {
     const elem = e.currentTarget;
@@ -46,7 +45,6 @@ class Item extends Component {
   };
   render() {
     const { name, picture, author, ganre, description, download, whereBuy, readIn, _id } = this.props.elem;
-    const liked = JSON.parse(localStorage.getItem("likedBooks"));
     return (
       <div className="">
         <div className="item" onClick={e => this.pickItem(e)}>
@@ -63,13 +61,13 @@ class Item extends Component {
             </div>
           </div>
           <div className="icons">
-            <i className={`fa ${liked.includes(_id) ? 'fa-heart' : 'fa-heart-o'}`}
+            <i className={`fa ${this.props.user.likes.includes(_id) ? 'fa-heart' : 'fa-heart-o'}`}
                data-id={_id}
                aria-hidden="true"
                ref={elem => this.icon = elem}
                onClick={e => this.like(e)}
             />
-            {this.props.admin ? this.renderEditBtn(name) : null}
+            {this.props.user.admin ? this.renderEditBtn(name) : null}
           </div>
         </div>
       </div>
@@ -79,7 +77,7 @@ class Item extends Component {
 function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated,
-    admin: state.auth.user.admin,
+    user: state.auth.user,
   };
 }
 export default connect(mapStateToProps, { activeBook, likeBook })(Item);

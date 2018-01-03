@@ -16,7 +16,6 @@ exports.login = function (req, res) {
       admin: (req.user.name === 'admin' && email === 'admin@gmail.com'),
       likes: req.user.likes,
     },
-    likes: req.user.likes,
   });
 };
 exports.register = function (req, res, next) {
@@ -41,7 +40,13 @@ exports.register = function (req, res, next) {
         return next(err);
       }
       res.json({ token: tokenForUser(user),
-        user: { name: name, email: email, admin: (name === 'admin' && email === 'admin@gmail.ru') } });
+        user: {
+          name: name,
+          email: email,
+          admin: (name === 'admin' && email === 'admin@gmail.ru'),
+          likes: [],
+        },
+      });
     });
   });
 };

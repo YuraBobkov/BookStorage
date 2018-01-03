@@ -26,7 +26,7 @@ export default class Header extends Component {
     if (this.props.user) {
       return (
         <div id="user">
-          <span className="navbar-brand">Hello, {JSON.parse(localStorage.getItem('tokenUser')).name}!</span>
+          <span className="navbar-brand">Hello, {this.props.user.name}!</span>
           <button className="navbar-toggler"
                   type="button"
                   data-toggle="collapse"

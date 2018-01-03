@@ -939,6 +939,140 @@ function isObject(value) {
 
 /***/ }),
 /* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+exports.authError = authError;
+exports.logIn = logIn;
+exports.logOut = logOut;
+exports.registration = registration;
+exports.getBooks = getBooks;
+exports.getMyBooks = getMyBooks;
+exports.activeBook = activeBook;
+exports.updateBook = updateBook;
+exports.likeBook = likeBook;
+exports.getUser = getUser;
+
+var _axios = __webpack_require__(125);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _const = __webpack_require__(17);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+var URL = 'http://localhost:8080';
+
+function authError(error) {
+  return {
+    type: _const.AUTH_ERROR,
+    payload: error
+  };
+}
+
+function logIn(_ref) {
+  var args = _objectWithoutProperties(_ref, []);
+
+  return function (dispatch) {
+    _axios2.default.post(URL + '/login', _extends({}, args)).then(function (response) {
+      localStorage.setItem('token', response.data.token);
+      dispatch({ type: _const.AUTH_USER, payload: response.data.user });
+    }).catch(function (error) {
+      dispatch(authError('Wrong login or password'));
+    });
+  };
+}
+
+function logOut() {
+  localStorage.removeItem('token');
+  return {
+    type: _const.UNAUTH_USER
+  };
+}
+
+function registration(_ref2) {
+  var args = _objectWithoutProperties(_ref2, []);
+
+  return function (dispatch) {
+    _axios2.default.post(URL + '/register', _extends({}, args)).then(function (response) {
+      localStorage.setItem('token', response.data.token);
+      dispatch({ type: _const.AUTH_USER, payload: response.data.user });
+    }).catch(function (_ref3) {
+      var response = _ref3.response;
+
+      dispatch(authError(response.data.error));
+    });
+  };
+}
+
+function getBooks(q, where) {
+  return {
+    type: _const.GET_BOOKS,
+    payload: q,
+    where: where
+  };
+}
+function getMyBooks(userEmail) {
+  return {
+    type: _const.GET_MY_BOOKS,
+    payload: userEmail
+  };
+}
+
+function activeBook(name) {
+  return {
+    type: _const.PICK_BOOKS,
+    payload: name
+  };
+}
+
+function updateBook(_ref4) {
+  var args = _objectWithoutProperties(_ref4, []);
+
+  return function (dispatch) {
+    _axios2.default.post(URL + '/books', _extends({}, args)).then(function (response) {
+      alert('Книгу успешно изменена');
+    }).catch(function (_ref5) {
+      var response = _ref5.response;
+
+      dispatch(authError(response.data.error));
+    });
+  };
+}
+
+function likeBook(number, user) {
+  return function (dispatch) {
+    _axios2.default.post(URL + '/users-books', { number: number, user: user }).catch(function (_ref6) {
+      var response = _ref6.response;
+
+      dispatch(authError(response.data.error));
+    });
+  };
+}
+function getUser(token) {
+  return function (dispatch) {
+    _axios2.default.post(URL + '/get-user', { token: token }).then(function (response) {
+      dispatch({ type: _const.AUTH_USER, payload: response.data });
+    }).catch(function (_ref7) {
+      var response = _ref7.response;
+
+      dispatch(authError(response.data.error));
+    });
+  };
+}
+
+/***/ }),
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -974,7 +1108,7 @@ function isObjectLike(value) {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -998,138 +1132,6 @@ function getNative(object, key) {
 
 /* harmony default export */ __webpack_exports__["a"] = (getNative);
 
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-exports.authError = authError;
-exports.logIn = logIn;
-exports.logOut = logOut;
-exports.registration = registration;
-exports.getBooks = getBooks;
-exports.getMyBooks = getMyBooks;
-exports.activeBook = activeBook;
-exports.updateBook = updateBook;
-exports.likeBook = likeBook;
-
-var _axios = __webpack_require__(125);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _const = __webpack_require__(17);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-var URL = 'http://localhost:8080';
-var setToken = function setToken(response) {
-  console.log(response);
-  localStorage.setItem('token', response.data.token);
-  localStorage.setItem('tokenUser', JSON.stringify(response.data.user));
-  localStorage.setItem('likedBooks', JSON.stringify(response.data.likes));
-};
-
-function authError(error) {
-  return {
-    type: _const.AUTH_ERROR,
-    payload: error
-  };
-}
-
-function logIn(_ref) {
-  var args = _objectWithoutProperties(_ref, []);
-
-  return function (dispatch) {
-    _axios2.default.post(URL + '/login', _extends({}, args)).then(function (response) {
-      setToken(response);
-      dispatch({ type: _const.AUTH_USER, payload: response.data.user });
-    }).catch(function (error) {
-      dispatch(authError('Wrong login or password'));
-    });
-  };
-}
-
-function logOut() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('tokenUser');
-  localStorage.removeItem('likedBooks');
-  return {
-    type: _const.UNAUTH_USER
-  };
-}
-
-function registration(_ref2) {
-  var args = _objectWithoutProperties(_ref2, []);
-
-  return function (dispatch) {
-    _axios2.default.post(URL + '/register', _extends({}, args)).then(function (response) {
-      setToken(response);
-      dispatch({ type: _const.AUTH_USER, payload: response.data.user });
-    }).catch(function (_ref3) {
-      var response = _ref3.response;
-
-      dispatch(authError(response.data.error));
-    });
-  };
-}
-
-function getBooks(q, where) {
-  return {
-    type: _const.GET_BOOKS,
-    payload: q,
-    where: where
-  };
-}
-function getMyBooks(array) {
-  return {
-    type: _const.GET_MY_BOOKS,
-    payload: array
-  };
-}
-
-function activeBook(name) {
-  return {
-    type: _const.PICK_BOOKS,
-    payload: name
-  };
-}
-
-function updateBook(_ref4) {
-  var args = _objectWithoutProperties(_ref4, []);
-
-  return function (dispatch) {
-    _axios2.default.post(URL + '/books', _extends({}, args)).then(function (response) {
-      alert('Книгу успешно изменена');
-    }).catch(function (_ref5) {
-      var response = _ref5.response;
-
-      dispatch(authError(response.data.error));
-    });
-  };
-}
-
-function likeBook(number, user) {
-  return function (dispatch) {
-    _axios2.default.post(URL + '/likedbooks', { number: number, user: user }).then(function (response) {
-      localStorage.setItem('likedBooks', JSON.stringify(response.data));
-    }).catch(function (_ref6) {
-      var response = _ref6.response;
-
-      dispatch(authError(response.data.error));
-    });
-  };
-}
 
 /***/ }),
 /* 15 */
@@ -1768,7 +1770,7 @@ module.exports = warning;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getPrototype_js__ = __webpack_require__(80);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(13);
 
 
 
@@ -2155,7 +2157,7 @@ function toPath(value) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(13);
 
 
 
@@ -2192,7 +2194,7 @@ function isSymbol(value) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
 
 
 /* Built-in method references that are verified to be native. */
@@ -3258,7 +3260,7 @@ function isFunction(value) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root_js__ = __webpack_require__(8);
 
 
@@ -3275,7 +3277,7 @@ var Map = Object(__WEBPACK_IMPORTED_MODULE_0__getNative_js__["a" /* default */])
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseIsEqualDeep_js__ = __webpack_require__(230);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(13);
 
 
 
@@ -3399,7 +3401,7 @@ function keys(object) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseIsArguments_js__ = __webpack_require__(252);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(13);
 
 
 
@@ -6645,7 +6647,7 @@ function mapValues(object, iteratee) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
 
 
 var defineProperty = (function() {
@@ -7257,7 +7259,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(6);
 
-var _actions = __webpack_require__(14);
+var _actions = __webpack_require__(12);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7293,10 +7295,9 @@ var Item = function (_Component) {
       e.stopPropagation();
       var elem = e.currentTarget;
       var bookId = elem.getAttribute('data-id');
-      var user = JSON.parse(localStorage.getItem('tokenUser')).email;
       elem.classList.toggle('fa-heart');
       elem.classList.toggle('fa-heart-o');
-      _this.props.likeBook(bookId, user);
+      _this.props.likeBook(bookId, _this.props.user.email);
     }, _this.pickItem = function (e) {
       var elem = e.currentTarget;
       if (!(e.target.tagName === 'A')) {
@@ -7336,7 +7337,6 @@ var Item = function (_Component) {
           readIn = _props$elem.readIn,
           _id = _props$elem._id;
 
-      var liked = JSON.parse(localStorage.getItem("likedBooks"));
       return _react2.default.createElement(
         'div',
         { className: '' },
@@ -7400,7 +7400,7 @@ var Item = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'icons' },
-            _react2.default.createElement('i', { className: 'fa ' + (liked.includes(_id) ? 'fa-heart' : 'fa-heart-o'),
+            _react2.default.createElement('i', { className: 'fa ' + (this.props.user.likes.includes(_id) ? 'fa-heart' : 'fa-heart-o'),
               'data-id': _id,
               'aria-hidden': 'true',
               ref: function ref(elem) {
@@ -7410,7 +7410,7 @@ var Item = function (_Component) {
                 return _this2.like(e);
               }
             }),
-            this.props.admin ? this.renderEditBtn(name) : null
+            this.props.user.admin ? this.renderEditBtn(name) : null
           )
         )
       );
@@ -7423,7 +7423,7 @@ var Item = function (_Component) {
 function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated,
-    admin: state.auth.user.admin
+    user: state.auth.user
   };
 }
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { activeBook: _actions.activeBook, likeBook: _actions.likeBook })(Item);
@@ -26440,6 +26440,8 @@ var _UserBooks = __webpack_require__(394);
 
 var _UserBooks2 = _interopRequireDefault(_UserBooks);
 
+var _actions = __webpack_require__(12);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26461,10 +26463,8 @@ var App = function (_Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var token = localStorage.getItem('token');
-      var tokenUser = localStorage.getItem('tokenUser');
-      var user = JSON.parse(tokenUser);
       if (token) {
-        _store2.default.dispatch({ type: _const.AUTH_USER, payload: user });
+        this.props.getUser(token);
       }
     }
   }, {
@@ -26507,7 +26507,7 @@ function mapStateToProps(state) {
   };
 }
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, null)(App);
+exports.default = (0, _reactRedux.connect)(mapStateToProps, { getUser: _actions.getUser })(App);
 
 /***/ }),
 /* 166 */
@@ -32269,7 +32269,7 @@ function baseTimes(n, iteratee) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(13);
 
 
 
@@ -32322,7 +32322,7 @@ function stubFalse() {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isLength_js__ = __webpack_require__(63);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(13);
 
 
 
@@ -32567,7 +32567,7 @@ if ((__WEBPACK_IMPORTED_MODULE_0__DataView_js__["a" /* default */] && getTag(new
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root_js__ = __webpack_require__(8);
 
 
@@ -32583,7 +32583,7 @@ var DataView = Object(__WEBPACK_IMPORTED_MODULE_0__getNative_js__["a" /* default
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root_js__ = __webpack_require__(8);
 
 
@@ -32599,7 +32599,7 @@ var Promise = Object(__WEBPACK_IMPORTED_MODULE_0__getNative_js__["a" /* default 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root_js__ = __webpack_require__(8);
 
 
@@ -32615,7 +32615,7 @@ var Set = Object(__WEBPACK_IMPORTED_MODULE_0__getNative_js__["a" /* default */])
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root_js__ = __webpack_require__(8);
 
 
@@ -36155,7 +36155,7 @@ var baseCreate = (function() {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__isArrayLike_js__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(13);
 
 
 
@@ -37965,11 +37965,12 @@ function request(store) {
           }
         case _const.GET_MY_BOOKS:
           {
-            console.log(action.payload);
-            _axios2.default.post('http://localhost:8080/mybooks', action.payload).then(function (body) {
+            console.log(action);
+            _axios2.default.post('http://localhost:8080/mybooks', { email: action.payload }).then(function (res) {
+              console.log(res);
               store.dispatch({
                 type: _const.ADD_MY_BOOKS,
-                payload: body.data
+                payload: res.data
               });
             });
             break;
@@ -38945,7 +38946,7 @@ function authReducer() {
     case _const.AUTH_USER:
       return _extends({}, state, { error: '', authenticated: true, user: action.payload });
     case _const.UNAUTH_USER:
-      return _extends({}, state, { authenticated: false, user: null });
+      return _extends({}, state, { authenticated: false, user: null, likes: null });
     case _const.AUTH_ERROR:
       return _extends({}, state, { error: action.payload });
     case _const.PICK_BOOKS:
@@ -38984,7 +38985,7 @@ var _Input = __webpack_require__(131);
 
 var _Input2 = _interopRequireDefault(_Input);
 
-var _actions = __webpack_require__(14);
+var _actions = __webpack_require__(12);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39122,7 +39123,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(6);
 
-var _actions = __webpack_require__(14);
+var _actions = __webpack_require__(12);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39186,7 +39187,7 @@ var _Input = __webpack_require__(131);
 
 var _Input2 = _interopRequireDefault(_Input);
 
-var _actions = __webpack_require__(14);
+var _actions = __webpack_require__(12);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39342,7 +39343,7 @@ var _reactRedux = __webpack_require__(6);
 
 var _redux = __webpack_require__(15);
 
-var _actions = __webpack_require__(14);
+var _actions = __webpack_require__(12);
 
 var _SearchField = __webpack_require__(387);
 
@@ -39610,7 +39611,7 @@ var _reduxForm = __webpack_require__(31);
 
 var _reactRedux = __webpack_require__(6);
 
-var _actions = __webpack_require__(14);
+var _actions = __webpack_require__(12);
 
 var _EditInput = __webpack_require__(390);
 
@@ -39917,7 +39918,7 @@ var Header = function (_Component) {
             'span',
             { className: 'navbar-brand' },
             'Hello, ',
-            JSON.parse(localStorage.getItem('tokenUser')).name,
+            this.props.user.name,
             '!'
           ),
           _react2.default.createElement(
@@ -40021,7 +40022,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(6);
 
-var _actions = __webpack_require__(14);
+var _actions = __webpack_require__(12);
 
 var _Item = __webpack_require__(132);
 
@@ -40047,7 +40048,7 @@ var BestBooks = function (_Component) {
   _createClass(BestBooks, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.props.getMyBooks(localStorage.getItem('likedBooks'));
+      this.props.getMyBooks(this.props.user.email);
     }
   }, {
     key: 'render',
@@ -40067,6 +40068,7 @@ var BestBooks = function (_Component) {
 
 function mapStateToProps(state) {
   return {
+    user: state.auth.user,
     books: state.userBooks
   };
 }

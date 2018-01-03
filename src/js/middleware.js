@@ -30,12 +30,13 @@ export default function request(store) {
           break;
         }
         case GET_MY_BOOKS: {
-          console.log(action.payload);
-          axios.post('http://localhost:8080/mybooks', action.payload )
-            .then((body) => {
+          console.log(action);
+          axios.post('http://localhost:8080/mybooks', {email: action.payload} )
+            .then((res) => {
+              console.log(res)
               store.dispatch({
                 type: ADD_MY_BOOKS,
-                payload: body.data,
+                payload: res.data,
               });
             });
           break;

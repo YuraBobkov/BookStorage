@@ -31,9 +31,17 @@ export function setGoodBook(data) {
       user.likes);
 }
 
+export function delGoodBook(data) {
+  return User.findOneAndUpdate({ email: data.user }, { $pull: { 'likes': data.number } })
+    .then(user =>{
+      var i = user.likes.indexOf(data.number);
+      (i !== -1) ? user.likes.splice(i, 1) : null;
+      return user.likes
+    });
+}
+
 export function bestBooksList(body) {
   return User.findOne({ email: body.email }).then(user => Books.find({ _id: { $in: user.likes } }));
-  ;
 }
 
 export function updateBook(data) {

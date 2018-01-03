@@ -14,8 +14,8 @@ exports.login = function (req, res) {
       name: req.user.name,
       email: email,
       admin: (req.user.name === 'admin' && email === 'admin@gmail.com'),
-      likes: req.user.likes,
     },
+    likes: req.user.likes,
   });
 };
 exports.register = function (req, res, next) {
@@ -44,8 +44,8 @@ exports.register = function (req, res, next) {
           name: name,
           email: email,
           admin: (name === 'admin' && email === 'admin@gmail.ru'),
-          likes: [],
         },
+        likes: [],
       });
     });
   });

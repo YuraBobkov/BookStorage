@@ -29,16 +29,22 @@ app.post('/books', (req, res) => {
 app.post('/get-user', (req, res) => {
   db.encode(req.body).then(user => {
     res.send({
-      email: user.email,
+      user: {
+        email: user.email,
+        name: user.name,
+        admin: user.email === 'admin@gmail.com',
+      },
       likes: user.likes,
-      name: user.name,
-      admin: user.email === 'admin@gmail.com',
     });
   });
 });
 
-app.post('/users-books', (req, res) => {
+app.post('/set-good-book', (req, res) => {
   db.setGoodBook(req.body).then(data => res.send([...data, req.body.number]));
+});
+
+app.post('/del-good-book', (req, res) => {
+  db.delGoodBook(req.body).then(data => res.send(data));
 });
 
 app.post('/mybooks', (req, res) => {

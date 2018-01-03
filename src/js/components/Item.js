@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-
-import { activeBook, likeBook } from '../actions/actions';
-
+import { activeBook, likeBook, unlikeBook } from '../actions/actions';
 
 class Item extends Component {
-  // componentDidMount(){
-  //   this.icon.addEventListener("click", (e) => this.like(e));
-  // }
-  // componentWillUnmount() {
-  //   this.icon.removeEventListener("click", (e) => this.like(e));
-  // }
   renderEditBtn = (name) =>{
     return (
     <button type="button" data-toggle="modal" data-target="#exampleModal">
@@ -24,9 +17,11 @@ class Item extends Component {
     e.stopPropagation();
     const elem = e.currentTarget;
     const bookId = elem.getAttribute('data-id');
-    elem.classList.toggle('fa-heart');
-    elem.classList.toggle('fa-heart-o');
-    this.props.likeBook(bookId, this.props.user.email);
+    // elem.classList.toggle('fa-heart');
+    // elem.classList.toggle('fa-heart-o');
+    elem.classList.contains('fa-heart-o') ? this.props.likeBook(bookId, this.props.user.email) :
+      this.props.unlikeBook(bookId, this.props.user.email);
+    
   };
   pickItem = (e) => {
     const elem = e.currentTarget;
@@ -61,7 +56,7 @@ class Item extends Component {
             </div>
           </div>
           <div className="icons">
-            <i className={`fa ${this.props.user.likes.includes(_id) ? 'fa-heart' : 'fa-heart-o'}`}
+            <i className={`fa ${this.props.likes.includes(_id) ? 'fa-heart' : 'fa-heart-o'}`}
                data-id={_id}
                aria-hidden="true"
                ref={elem => this.icon = elem}
@@ -78,6 +73,11 @@ function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated,
     user: state.auth.user,
+    likes: state.auth.likes,
   };
 }
-export default connect(mapStateToProps, { activeBook, likeBook })(Item);
+function mapActionsToProps(dispatch) {
+  return bindActionCreators({ activeBook, likeBook, unlikeBook }, dispatch);
+}
+
+export default connect(mapStateToProps, mapActionsToProps)(Item);

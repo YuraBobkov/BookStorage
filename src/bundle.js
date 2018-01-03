@@ -951,6 +951,7 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 exports.authError = authError;
+exports.getUser = getUser;
 exports.logIn = logIn;
 exports.logOut = logOut;
 exports.registration = registration;
@@ -959,7 +960,7 @@ exports.getMyBooks = getMyBooks;
 exports.activeBook = activeBook;
 exports.updateBook = updateBook;
 exports.likeBook = likeBook;
-exports.getUser = getUser;
+exports.unlikeBook = unlikeBook;
 
 var _axios = __webpack_require__(125);
 
@@ -980,13 +981,25 @@ function authError(error) {
   };
 }
 
-function logIn(_ref) {
-  var args = _objectWithoutProperties(_ref, []);
+function getUser(token) {
+  return function (dispatch) {
+    _axios2.default.post(URL + '/get-user', { token: token }).then(function (response) {
+      dispatch({ type: _const.AUTH_USER, payload: response.data.user, likes: response.data.likes });
+    }).catch(function (_ref) {
+      var response = _ref.response;
+
+      dispatch(authError(response.data.error));
+    });
+  };
+}
+
+function logIn(_ref2) {
+  var args = _objectWithoutProperties(_ref2, []);
 
   return function (dispatch) {
     _axios2.default.post(URL + '/login', _extends({}, args)).then(function (response) {
       localStorage.setItem('token', response.data.token);
-      dispatch({ type: _const.AUTH_USER, payload: response.data.user });
+      dispatch({ type: _const.AUTH_USER, payload: response.data.user, likes: response.data.likes });
     }).catch(function (error) {
       dispatch(authError('Wrong login or password'));
     });
@@ -1000,15 +1013,15 @@ function logOut() {
   };
 }
 
-function registration(_ref2) {
-  var args = _objectWithoutProperties(_ref2, []);
+function registration(_ref3) {
+  var args = _objectWithoutProperties(_ref3, []);
 
   return function (dispatch) {
     _axios2.default.post(URL + '/register', _extends({}, args)).then(function (response) {
       localStorage.setItem('token', response.data.token);
-      dispatch({ type: _const.AUTH_USER, payload: response.data.user });
-    }).catch(function (_ref3) {
-      var response = _ref3.response;
+      dispatch({ type: _const.AUTH_USER, payload: response.data.user, likes: response.data.likes });
+    }).catch(function (_ref4) {
+      var response = _ref4.response;
 
       dispatch(authError(response.data.error));
     });
@@ -1036,14 +1049,14 @@ function activeBook(name) {
   };
 }
 
-function updateBook(_ref4) {
-  var args = _objectWithoutProperties(_ref4, []);
+function updateBook(_ref5) {
+  var args = _objectWithoutProperties(_ref5, []);
 
   return function (dispatch) {
     _axios2.default.post(URL + '/books', _extends({}, args)).then(function (response) {
       alert('Книгу успешно изменена');
-    }).catch(function (_ref5) {
-      var response = _ref5.response;
+    }).catch(function (_ref6) {
+      var response = _ref6.response;
 
       dispatch(authError(response.data.error));
     });
@@ -1052,17 +1065,8 @@ function updateBook(_ref4) {
 
 function likeBook(number, user) {
   return function (dispatch) {
-    _axios2.default.post(URL + '/users-books', { number: number, user: user }).catch(function (_ref6) {
-      var response = _ref6.response;
-
-      dispatch(authError(response.data.error));
-    });
-  };
-}
-function getUser(token) {
-  return function (dispatch) {
-    _axios2.default.post(URL + '/get-user', { token: token }).then(function (response) {
-      dispatch({ type: _const.AUTH_USER, payload: response.data });
+    _axios2.default.post(URL + '/set-good-book', { number: number, user: user }).then(function (response) {
+      dispatch({ type: _const.AUTH_LIKES, payload: response.data });
     }).catch(function (_ref7) {
       var response = _ref7.response;
 
@@ -1071,8 +1075,58 @@ function getUser(token) {
   };
 }
 
+function unlikeBook(number, user) {
+  return function (dispatch) {
+    _axios2.default.post(URL + '/del-good-book', { number: number, user: user }).then(function (response) {
+      console.log(response);
+      dispatch({ type: _const.AUTH_LIKES, payload: response.data });
+    }).catch(function (_ref8) {
+      var response = _ref8.response;
+
+      dispatch(authError(response.data.error));
+    });
+  };
+}
+
 /***/ }),
 /* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(158);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(160);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(82);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return __WEBPACK_IMPORTED_MODULE_1__combineReducers__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "applyMiddleware", function() { return __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return __WEBPACK_IMPORTED_MODULE_4__compose__["a"]; });
+
+
+
+
+
+
+
+/*
+* This is a dummy function to check if the function name has been altered by minification.
+* If the function has been minified and NODE_ENV !== 'production', warn the user.
+*/
+function isCrushed() {}
+
+if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+  Object(__WEBPACK_IMPORTED_MODULE_5__utils_warning__["a" /* default */])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+}
+
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
+
+/***/ }),
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1108,7 +1162,7 @@ function isObjectLike(value) {
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1132,43 +1186,6 @@ function getNative(object, key) {
 
 /* harmony default export */ __webpack_exports__["a"] = (getNative);
 
-
-/***/ }),
-/* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(159);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(160);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(83);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(82);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return __WEBPACK_IMPORTED_MODULE_1__combineReducers__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "applyMiddleware", function() { return __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return __WEBPACK_IMPORTED_MODULE_4__compose__["a"]; });
-
-
-
-
-
-
-
-/*
-* This is a dummy function to check if the function name has been altered by minification.
-* If the function has been minified and NODE_ENV !== 'production', warn the user.
-*/
-function isCrushed() {}
-
-if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-  Object(__WEBPACK_IMPORTED_MODULE_5__utils_warning__["a" /* default */])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
-}
-
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
 
 /***/ }),
 /* 16 */
@@ -1227,6 +1244,7 @@ var ADD_MY_BOOKS = exports.ADD_MY_BOOKS = 'ADD_MY_BOOKS';
 var AUTH_USER = exports.AUTH_USER = 'AUTH_USER';
 var UNAUTH_USER = exports.UNAUTH_USER = 'UNAUTH_USER';
 var AUTH_ERROR = exports.AUTH_ERROR = 'AUTH_ERROR';
+var AUTH_LIKES = exports.AUTH_LIKES = 'AUTH_LIKES';
 
 /***/ }),
 /* 18 */
@@ -1770,7 +1788,7 @@ module.exports = warning;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getPrototype_js__ = __webpack_require__(80);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(14);
 
 
 
@@ -2157,7 +2175,7 @@ function toPath(value) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(14);
 
 
 
@@ -2194,7 +2212,7 @@ function isSymbol(value) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(15);
 
 
 /* Built-in method references that are verified to be native. */
@@ -3260,7 +3278,7 @@ function isFunction(value) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root_js__ = __webpack_require__(8);
 
 
@@ -3277,7 +3295,7 @@ var Map = Object(__WEBPACK_IMPORTED_MODULE_0__getNative_js__["a" /* default */])
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseIsEqualDeep_js__ = __webpack_require__(230);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(14);
 
 
 
@@ -3401,7 +3419,7 @@ function keys(object) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseIsArguments_js__ = __webpack_require__(252);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(14);
 
 
 
@@ -5486,7 +5504,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(13);
 
 var _reduxLogger = __webpack_require__(191);
 
@@ -6647,7 +6665,7 @@ function mapValues(object, iteratee) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(15);
 
 
 var defineProperty = (function() {
@@ -7259,6 +7277,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(6);
 
+var _redux = __webpack_require__(13);
+
 var _actions = __webpack_require__(12);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -7295,9 +7315,9 @@ var Item = function (_Component) {
       e.stopPropagation();
       var elem = e.currentTarget;
       var bookId = elem.getAttribute('data-id');
-      elem.classList.toggle('fa-heart');
-      elem.classList.toggle('fa-heart-o');
-      _this.props.likeBook(bookId, _this.props.user.email);
+      // elem.classList.toggle('fa-heart');
+      // elem.classList.toggle('fa-heart-o');
+      elem.classList.contains('fa-heart-o') ? _this.props.likeBook(bookId, _this.props.user.email) : _this.props.unlikeBook(bookId, _this.props.user.email);
     }, _this.pickItem = function (e) {
       var elem = e.currentTarget;
       if (!(e.target.tagName === 'A')) {
@@ -7313,13 +7333,6 @@ var Item = function (_Component) {
       _this.props.activeBook(bookTitle);
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
-  // componentDidMount(){
-  //   this.icon.addEventListener("click", (e) => this.like(e));
-  // }
-  // componentWillUnmount() {
-  //   this.icon.removeEventListener("click", (e) => this.like(e));
-  // }
-
 
   _createClass(Item, [{
     key: 'render',
@@ -7400,7 +7413,7 @@ var Item = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'icons' },
-            _react2.default.createElement('i', { className: 'fa ' + (this.props.user.likes.includes(_id) ? 'fa-heart' : 'fa-heart-o'),
+            _react2.default.createElement('i', { className: 'fa ' + (this.props.likes.includes(_id) ? 'fa-heart' : 'fa-heart-o'),
               'data-id': _id,
               'aria-hidden': 'true',
               ref: function ref(elem) {
@@ -7423,10 +7436,15 @@ var Item = function (_Component) {
 function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated,
-    user: state.auth.user
+    user: state.auth.user,
+    likes: state.auth.likes
   };
 }
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { activeBook: _actions.activeBook, likeBook: _actions.likeBook })(Item);
+function mapActionsToProps(dispatch) {
+  return (0, _redux.bindActionCreators)({ activeBook: _actions.activeBook, likeBook: _actions.likeBook, unlikeBook: _actions.unlikeBook }, dispatch);
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapActionsToProps)(Item);
 
 /***/ }),
 /* 133 */
@@ -25711,7 +25729,7 @@ function shallowEqual(objA, objB) {
 /* unused harmony export whenMapDispatchToPropsIsFunction */
 /* unused harmony export whenMapDispatchToPropsIsMissing */
 /* unused harmony export whenMapDispatchToPropsIsObject */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_redux__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_redux__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__wrapMapToProps__ = __webpack_require__(84);
 
 
@@ -32269,7 +32287,7 @@ function baseTimes(n, iteratee) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(14);
 
 
 
@@ -32322,7 +32340,7 @@ function stubFalse() {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isLength_js__ = __webpack_require__(63);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(14);
 
 
 
@@ -32567,7 +32585,7 @@ if ((__WEBPACK_IMPORTED_MODULE_0__DataView_js__["a" /* default */] && getTag(new
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root_js__ = __webpack_require__(8);
 
 
@@ -32583,7 +32601,7 @@ var DataView = Object(__WEBPACK_IMPORTED_MODULE_0__getNative_js__["a" /* default
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root_js__ = __webpack_require__(8);
 
 
@@ -32599,7 +32617,7 @@ var Promise = Object(__WEBPACK_IMPORTED_MODULE_0__getNative_js__["a" /* default 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root_js__ = __webpack_require__(8);
 
 
@@ -32615,7 +32633,7 @@ var Set = Object(__WEBPACK_IMPORTED_MODULE_0__getNative_js__["a" /* default */])
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__getNative_js__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__root_js__ = __webpack_require__(8);
 
 
@@ -33351,7 +33369,7 @@ var createFieldArray = function createFieldArray(structure) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_redux__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_redux__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_redux__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__createFieldArrayProps__ = __webpack_require__(286);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__structure_plain__ = __webpack_require__(1);
 
@@ -34916,7 +34934,7 @@ var createHasSubmitFailed = function createHasSubmitFailed(_ref) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_react_redux__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_redux__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_redux__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__actions__ = __webpack_require__(94);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__asyncValidation__ = __webpack_require__(347);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__defaultShouldAsyncValidate__ = __webpack_require__(95);
@@ -36155,7 +36173,7 @@ var baseCreate = (function() {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__isArrayLike_js__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__isObjectLike_js__ = __webpack_require__(14);
 
 
 
@@ -37670,7 +37688,7 @@ var createValues = function createValues(_ref) {
 "use strict";
 
 
-var compose = __webpack_require__(15).compose;
+var compose = __webpack_require__(13).compose;
 
 exports.__esModule = true;
 exports.composeWithDevTools = (
@@ -38944,9 +38962,11 @@ function authReducer() {
 
   switch (action.type) {
     case _const.AUTH_USER:
-      return _extends({}, state, { error: '', authenticated: true, user: action.payload });
+      return _extends({}, state, { error: '', authenticated: true, user: action.payload, likes: action.likes });
     case _const.UNAUTH_USER:
       return _extends({}, state, { authenticated: false, user: null, likes: null });
+    case _const.AUTH_LIKES:
+      return _extends({}, state, { likes: action.payload });
     case _const.AUTH_ERROR:
       return _extends({}, state, { error: action.payload });
     case _const.PICK_BOOKS:
@@ -39341,7 +39361,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(6);
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(13);
 
 var _actions = __webpack_require__(12);
 

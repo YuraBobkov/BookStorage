@@ -16,8 +16,9 @@ export function getUser(token) {
       .then(response => {
         dispatch({ type: AUTH_USER, payload: response.data.user, likes: response.data.likes });
       })
-      .catch(({response}) => {
-        dispatch(authError(response.data.error));
+      .catch((error) => {
+        alert(error);
+        throw new Error(error.message);
       });
   };
 }
@@ -82,8 +83,9 @@ export function updateBook({ ...args }) {
       .then((response) => {
         alert('Книгу успешно изменена');
       })
-      .catch(({ response }) => {
-        dispatch(authError(response.data.error));
+      .catch((error) => {
+        alert(error);
+        throw new Error(error.message);
       });
   };
 }
@@ -92,11 +94,11 @@ export function likeBook(number, user) {
   return function (dispatch) {
     axios.post(`${URL}/set-good-book`, { number, user })
       .then(response => {
-        console.log(response)
         dispatch({ type: AUTH_LIKES, payload: response.data });
       })
-      .catch(({ response }) => {
-        dispatch(authError(response.data.error));
+      .catch((error) => {
+        alert(error);
+        throw new Error(error.message);
       });
   };
 }
@@ -105,11 +107,11 @@ export function unlikeBook(number, user) {
   return function (dispatch) {
     axios.post(`${URL}/del-good-book`, { number, user })
       .then(response => {
-        console.log(response);
         dispatch({ type: AUTH_LIKES, payload: response.data });
       })
-      .catch(({ response }) => {
-        dispatch(authError(response.data.error));
+      .catch((error) => {
+        alert(error);
+        throw new Error(error.message);
       });
   };
 }

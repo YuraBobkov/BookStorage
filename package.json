@@ -4,7 +4,7 @@
   "description": "Start template",
   "main": "index.js",
   "scripts": {
-    "dev": "./node_modules/.bin/webpack-dev-server --content-base src --inline --hot",
+    "prod": "NODE_ENV='production' webpack -p gulp build",
     "lint": "eslint ./src/js/index.js || true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

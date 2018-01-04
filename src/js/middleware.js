@@ -32,10 +32,8 @@ export default function request(store) {
           break;
         }
         case GET_MY_BOOKS: {
-          console.log(action);
           axios.post(`${URL}/mybooks`, {email: action.payload} )
             .then((res) => {
-              console.log(res)
               store.dispatch({
                 type: ADD_MY_BOOKS,
                 payload: res.data,

@@ -97,7 +97,7 @@ gulp.task('build', ['removedist', 'buildhtml', 'imagemin', 'sass', 'libs'], func
     'src/.htaccess'
   ]).pipe(gulp.dest('dist'))
   var buildFonts = gulp.src('src/fonts/**/*').pipe(gulp.dest('dist/fonts'))
-  var buildJs = gulp.src('src/js/**/*').pipe(gulp.dest('dist/js'))
+  var buildJs = gulp.src('src/bundle.js').pipe(gulp.dest('dist'))
 })
 
 gulp.task('deploy', function () {

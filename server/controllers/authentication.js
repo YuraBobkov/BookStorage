@@ -12,7 +12,7 @@ exports.login = function (req, res) {
     user: {
       name: req.user.name,
       email: req.body.email,
-      admin: (req.user.name === 'admin' && email === 'admin@gmail.com'),
+      admin: (req.user.name === 'admin' && req.body.email === 'admin@gmail.com'),
     },
     likes: req.user.likes,
   });

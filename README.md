@@ -24,7 +24,7 @@ const API_URL = 'http://localhost:3090';
 
 ### Installation and usage
 
-Install the npm in rood dir:
+Install the npm in root dir:
 ```bash
 $ npm install
 ```

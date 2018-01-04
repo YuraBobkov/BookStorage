@@ -15,13 +15,6 @@ $ node server.js
 ```
 ## Client
 
-
-src/actions/index.js
-```javascript
-// Server API URL
-const API_URL = 'http://localhost:3090';
-```
-
 ### Installation and usage
 
 Install the npm in `root` dir:

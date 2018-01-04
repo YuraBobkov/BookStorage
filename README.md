@@ -1,6 +1,13 @@
 # BookStorage
 
-The databases lie on the MLab and all what you need is start server and run gulp 
+The databases lie on the MLab and all what you need is start server and run gulp.
+In this APP you can LogIn, register users and save all actions that user do in database(DB).
+
+Admin can edit books in DB. In order to enter the administrator use:
+``
+email: admin@gmail.com
+password: admin
+``
 
 ## Server
 

@@ -6,11 +6,11 @@ The databases lie on the MLab and all what you need is start server and run gulp
 
 ### Installation and usage
 In dir `server` Install the npm:
-```bash
+```javascript
 $ npm install
 ```
 and then Start the server:
-```bash
+```javascript
 $ node server.js
 ```
 ## Client
@@ -24,12 +24,12 @@ const API_URL = 'http://localhost:3090';
 
 ### Installation and usage
 
-Install the npm in root dir:
-```bash
+Install the npm in `root` dir:
+```javascript
 $ npm install
 ```
 
 and start gulp:
-```bash
+```javascript
 $ gulp watch
 ```

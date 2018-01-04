@@ -1,4 +1,4 @@
 /node_modules/
 /.idea/
 /.git/
-
+/server/node_modules/

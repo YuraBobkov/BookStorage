@@ -3,8 +3,8 @@
     "serverPort": "8080",
     "secret": "24fs",
     "db":{
-        "name": "test",
-        "host": "localhost",
-        "port": 27017
+        "name": "awesomedata",
+        "host": "admin:admin@ds123946.mlab.com",
+        "port": 23946
     }
 }

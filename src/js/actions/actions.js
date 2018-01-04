@@ -92,6 +92,7 @@ export function likeBook(number, user) {
   return function (dispatch) {
     axios.post(`${URL}/set-good-book`, { number, user })
       .then(response => {
+        console.log(response)
         dispatch({ type: AUTH_LIKES, payload: response.data });
       })
       .catch(({ response }) => {

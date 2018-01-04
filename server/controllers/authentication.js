@@ -1,25 +1,26 @@
-const jwt = require('jwt-simple');
-const User = require('../models/User');
-const config = require('../config');
+var jwt = require('jwt-simple');
+var User = require('../models/User');
+var config = require('../config');
 
 function tokenForUser(user) {
-  const timestamp = new Date().getTime();
+  var timestamp = new Date().getTime();
   return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
 }
 exports.login = function (req, res) {
-  const email = req.body.email;
   res.send({
     token: tokenForUser(req.user),
     user: {
       name: req.user.name,
-      email: email,
+      email: req.body.email,
       admin: (req.user.name === 'admin' && email === 'admin@gmail.com'),
     },
     likes: req.user.likes,
   });
 };
 exports.register = function (req, res, next) {
-  const { email, password, name } = req.body;
+  var  email = req.body.email;
+  var  password = req.body.password;
+  var  name = req.body.name;
   if (!email || !password) {
     return res.status(422).send({ error: 'You must provide email and password' });
   }
@@ -30,7 +31,7 @@ exports.register = function (req, res, next) {
     if (existingUser) {
       return res.status(422).send({ error: 'Email is in use' });
     }
-    const user = new User({
+    var user = new User({
       email: email,
       password: password,
       name: name,

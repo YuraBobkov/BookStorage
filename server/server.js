@@ -1,14 +1,17 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
+var express = require('express');
+var cors = require('cors');
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
 
-const router = require('./router');
-const { serverPort } = require('./config.json');
+var router = require('./router');
+var serverPort = require('./config.json').serverPort;
 
-import * as db from './utils/DataBaseUtils';
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+var _utilsDataBaseUtils = require('./utils/DataBaseUtils');
 
-const app = express();
+var db = _interopRequireWildcard(_utilsDataBaseUtils);
+
+var app = express();
 
 db.setUpConnection();
 
@@ -18,15 +21,15 @@ app.use(cors({ origin: '*' }));
 
 router(app);
 
-app.get('/books', (req, res) => {
+app.get('/books', function (req, res) {
   db.getAllBooks().then(data => res.send(data));
 });
 
-app.post('/books', (req, res) => {
+app.post('/books', function (req, res) {
   db.updateBook(req.body).then(e=> res.send(e));
 });
 
-app.post('/get-user', (req, res) => {
+app.post('/get-user', function (req, res) {
   db.encode(req.body).then(user => {
     res.send({
       user: {
@@ -39,18 +42,18 @@ app.post('/get-user', (req, res) => {
   });
 });
 
-app.post('/set-good-book', (req, res) => {
-  db.setGoodBook(req.body).then(data => res.send([...data, req.body.number]));
+app.post('/set-good-book', function (req, res) {
+  db.setGoodBook(req.body).then(data => res.send([].concat(data, req.body.number)));
 });
 
-app.post('/del-good-book', (req, res) => {
+app.post('/del-good-book', function (req, res) {
   db.delGoodBook(req.body).then(data => res.send(data));
 });
 
-app.post('/mybooks', (req, res) => {
+app.post('/mybooks', function (req, res) {
   db.bestBooksList(req.body).then(books => res.send(books));
 });
 
-const server = app.listen(serverPort, function() {
+var server = app.listen(serverPort, function () {
   console.log(`Server is up and running on port ${serverPort}`);
 });

@@ -1,10 +1,12 @@
-const Authentication = require('./controllers/authentication');
-const passportService = require('./services/passport');
+'use strict';
 
-const passport = require('passport');
+var Authentication = require('./controllers/authentication');
+var passportService = require('./services/passport');
 
-const requireAuth = passport.authenticate('jwt', { session: false });
-const requireSignIn = passport.authenticate('local', { session: false });
+var passport = require('passport');
+
+var requireAuth = passport.authenticate('jwt', { session: false });
+var requireSignIn = passport.authenticate('local', { session: false });
 
 module.exports = function (app) {
   app.get('/', requireAuth, function (req, res) {

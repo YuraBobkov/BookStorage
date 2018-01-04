@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+var mongoose = require('mongoose');
 
-const Schema = mongoose.Schema;
+var Schema = mongoose.Schema;
 
-const BookSchema = new Schema({
+var BookSchema = new Schema({
   download: { type: String },
   whereBuy: { type: String },
   readIn: { type: String },

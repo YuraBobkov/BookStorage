@@ -1,13 +1,13 @@
-const passport = require('passport');
-const User = require('../models/User');
-const config = require('../config');
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
-const LocalStrategy = require('passport-local');
+var passport = require('passport');
+var User = require('../models/User');
+var config = require('../config');
+var JwtStrategy = require('passport-jwt').Strategy;
+var ExtractJwt = require('passport-jwt').ExtractJwt;
+var LocalStrategy = require('passport-local');
 
 
-const localOptions = { usernameField: 'email' };
-const localLogin = new LocalStrategy(localOptions, function (email, password, done) {
+var localOptions = { usernameField: 'email' };
+var localLogin = new LocalStrategy(localOptions, function (email, password, done) {
   User.findOne({ email: email }, function (err, user) {
     if (err) {
       return done(err);
@@ -26,11 +26,11 @@ const localLogin = new LocalStrategy(localOptions, function (email, password, do
     });
   });
 });
-const jwtOptions = {
+var jwtOptions = {
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
   secretOrKey: config.secret,
 };
-const jwtLogin = new JwtStrategy(jwtOptions, function (payload, done) {
+var jwtLogin = new JwtStrategy(jwtOptions, function (payload, done) {
   User.findById(payload.sub, function (err, user) {
     if (err) {
       return done(err, false);

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { GET_BOOKS, ADD_BOOKS, GET_MY_BOOKS, ADD_MY_BOOKS } from './const/const';
 
+const URL = 'http://localhost:8080';
+
 const makeRequest = (URL) => {
   return fetch(URL)
     .then(res => res.json())
@@ -19,7 +21,7 @@ export default function request(store) {
     return function (action) {
       switch (action.type) {
         case GET_BOOKS: {
-          makeRequest('http://localhost:8080/books')
+          makeRequest(`${URL}/books`)
             .then(data => filterBooks(data, action.payload, action.where))
             .then((body) => {
               store.dispatch({
@@ -31,7 +33,7 @@ export default function request(store) {
         }
         case GET_MY_BOOKS: {
           console.log(action);
-          axios.post('http://localhost:8080/mybooks', {email: action.payload} )
+          axios.post(`${URL}/mybooks`, {email: action.payload} )
             .then((res) => {
               console.log(res)
               store.dispatch({
